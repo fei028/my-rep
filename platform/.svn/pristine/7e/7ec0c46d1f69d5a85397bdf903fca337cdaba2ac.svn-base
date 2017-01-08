@@ -1,0 +1,62 @@
+package com.xlkh.platform.dao.system;
+
+import java.util.List;
+import java.util.Set;
+
+import com.xlkh.platform.pojo.system.SysFunction;
+import com.xlkh.platform.pojo.system.Tree;
+import com.xlkh.platform.query.system.SysFunctionQuery;
+
+public interface SysFunctionDao {
+
+	/**
+	 * 新增
+	 * @param sysFunction
+	 * @return
+	 */
+	public void insertSelective(SysFunction sysFunction);
+	/**
+	 * 通过主键删除
+	 * @param functionId
+	 */
+	public void deleteByKey(Integer functionId);
+	/**
+	 * 更新
+	 * @param sysFunction
+	 */
+	public void update(SysFunction sysFunction);
+	/**
+	 * 通过主键查询获取SysFunction对象
+	 * @param functionId 主键id
+	 * @return SysFunction对象
+	 */
+	public SysFunction selectByKey(Integer functionId);
+	/**
+	 * 条件查询
+	 * @param sysFunctionQuery
+	 * @return
+	 */
+	public List<SysFunction> selectSysFunctionsWithCondition(SysFunctionQuery sysFunctionQuery);
+	/**
+	 * 获取用户id为userId的用户所拥有权限的id集合
+	 * @param userId
+	 * @return
+	 */
+	public List<Integer> selectFunctionIds(Integer userId);
+	/**
+	 * 获取树所有节点
+	 * @return
+	 */
+	public List<Tree> getTreeNodes();
+	/**
+	 * 批量删除
+	 * @param functionIds 权限id集合
+	 */
+	public void deleteByFunctionIds(Integer[] functionIds);
+	/**
+	 * 获取功能代码集合
+	 * @param functionIds
+	 * @return
+	 */
+	public Set<String> selectPermissionCodes(List<Integer> functionIds);
+}

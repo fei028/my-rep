@@ -1,0 +1,37 @@
+package com.xlkh.platform.dao.system;
+
+import java.util.List;
+
+import com.xlkh.platform.pojo.system.SysRole;
+import com.xlkh.platform.query.system.SysRoleQuery;
+
+public interface SysRoleDao {
+	/**
+	 * 新增角色
+	 * @param sysRole 新角色
+	 * @return 新增角色主键值
+	 */
+	public Integer insertSelective(SysRole sysRole);
+	/**
+	 * 删除角色通过主键
+	 * @param roleId
+	 */
+	public void deleteByKey(Integer roleId);
+	/**
+	 * 更新角色
+	 * @param sysRole
+	 */
+	public void update(SysRole sysRole);
+	/**
+	 * 通过主键查询获取角色
+	 * @param roleId 角色ID
+	 * @return 角色对象
+	 */
+	public SysRole selectByKey(Integer roleId);
+	/**
+	 * 条件查询
+	 * @param sysRoleQuery 查询对象
+	 * @return SysRole对象集合
+	 */
+	public List<SysRole> selectSysRolesWithCondition(SysRoleQuery sysRoleQuery);
+}

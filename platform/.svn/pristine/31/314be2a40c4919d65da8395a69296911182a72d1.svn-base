@@ -1,0 +1,97 @@
+package com.xlkh.platform.query.system;
+
+import java.util.Date;
+
+import com.xlkh.platform.query.BaseQuery;
+
+public class SysGroupQuery extends BaseQuery{
+
+	/** 用户组 */
+	private Integer groupId;
+	/** 用户组名 */
+	private String groupName;
+	/** 描述 */
+	private String groupDesc;
+	/** 备注 */
+	private String groupRemark;
+	/** 创建人 */
+	private Integer createUser;
+	/** 创建日期 */
+	private Date createTime;
+	/** 更新人 */
+	private Integer updateUser;
+	/** 更新时间 */
+	private Date updateTime;
+	
+	public Integer getGroupId() {
+        return groupId;
+    }
+
+    public SysGroupQuery setGroupId(Integer groupId) {
+        this.groupId = groupId;
+        return this;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public SysGroupQuery setGroupName(String groupName) {
+        this.groupName = groupName == null ? null : groupName.trim();
+        return this;
+    }
+
+    public String getGroupDesc() {
+        return groupDesc;
+    }
+
+    public SysGroupQuery setGroupDesc(String groupDesc) {
+        this.groupDesc = groupDesc == null ? null : groupDesc.trim();
+        return this;
+    }
+
+    public String getGroupRemark() {
+        return groupRemark;
+    }
+
+    public SysGroupQuery setGroupRemark(String groupRemark) {
+        this.groupRemark = groupRemark == null ? null : groupRemark.trim();
+        return this;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public SysGroupQuery setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+        return this;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public SysGroupQuery setCreateTime(Date createTime) {
+        this.createTime = createTime;
+        return this;
+    }
+
+    public Integer getUpdateUser() {
+        return updateUser;
+    }
+
+    public SysGroupQuery setUpdateUser(Integer updateUser) {
+        this.updateUser = updateUser;
+        return this;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public SysGroupQuery setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+        return this;
+    }
+}

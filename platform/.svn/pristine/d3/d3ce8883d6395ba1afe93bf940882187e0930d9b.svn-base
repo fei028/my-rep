@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkh.platform.dao.system.SysFunctionDao" >
+  <resultMap id="sysFunction" type="SysFunction" >
+    <id column="function_id" property="functionId" jdbcType="INTEGER" />
+    <result column="function_code" property="functionCode" jdbcType="VARCHAR" />
+    <result column="function_name" property="functionName" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="function_desc" property="functionDesc" jdbcType="VARCHAR" />
+    <result column="function_url" property="functionUrl" jdbcType="VARCHAR" />
+    <result column="function_remark" property="functionRemark" jdbcType="VARCHAR" />
+    <result column="function_type" property="functionType" jdbcType="INTEGER" />
+    <result column="create_user" property="createUser" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="INTEGER" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+   <resultMap id="tree" type="Tree" >
+    <id column="function_id" property="id" jdbcType="INTEGER" />
+    <result column="function_name" property="text" jdbcType="VARCHAR" />
+    <result column="parent_id" property="pId" jdbcType="INTEGER" />
+    <result column="function_url" property="href" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    function_id, function_code, function_name, parent_id, function_desc, function_url, 
+    function_remark, function_type, create_user, create_time, update_user, update_time
+  </sql>
+  
+  <!-- 查询select部分  -->
+  <sql id="selector">
+  	SELECT
+  	<if test="fields != null">
+  	 	${fields}
+  	</if>
+  	<if test="fields == null">
+  		<include refid="Base_Column_List"/>
+  	</if>
+  	FROM sys_function
+  </sql>
+  <!-- 查询where语句部分 -->
+  <sql id="where">
+	<where>
+      <if test="functionIds != null and functionIds.size()>0" >
+        AND function_id IN
+        <foreach collection="functionIds" item="_functionId" open="(" close=")" separator=",">
+          ${_functionId}
+        </foreach>
+      </if>
+      <if test="functionId != null" >
+        AND function_id = ${functionId}
+      </if>
+	  <if test="functionCode != null" >
+        AND function_code = #{functionCode,jdbcType=VARCHAR}
+      </if>
+      <if test="functionName != null" >
+        AND function_name = #{functionName,jdbcType=VARCHAR}
+      </if>
+      <if test="parentId != null" >
+        AND parent_id = #{parentId,jdbcType=INTEGER}
+      </if>
+      <if test="functionDesc != null" >
+        AND function_desc = #{functionDesc,jdbcType=VARCHAR}
+      </if>
+      <if test="functionUrl != null" >
+        AND function_url = #{functionUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="functionRemark != null" >
+        AND function_remark = #{functionRemark,jdbcType=VARCHAR}
+      </if>
+      <if test="functionType != null" >
+        AND function_type = #{functionType,jdbcType=INTEGER}
+      </if>
+      <if test="createUser != null" >
+        AND create_user = #{createUser,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null" >
+        AND create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateUser != null" >
+        AND update_user = #{updateUser,jdbcType=INTEGER}
+      </if>
+      <if test="updateTime != null" >
+        AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+	</where>
+  </sql>
+  <!-- 查询语句order by 部分 -->
+  <sql id="orderBy">
+  	<if test="orderFields != null and orderByFields.size>0">
+  		ORDER BY
+  		<foreach collection="orderFields" item="orderField" separator=",">
+  			${orderField.field} ${orderField.order}
+  		</foreach>
+  	</if>
+  </sql>
+  
+  <sql id="limit">
+  	<if test="startRow != null">
+  		LIMIT ${startRow},${pageSize}
+  	</if>
+  </sql>
+  <!--  条件查询  -->
+  <select id="selectSysFunctionsWithCondition" resultMap="sysFunction" parameterType="sysFunctionQuery">
+  	<include refid="selector"/>
+  	<include refid="where"/>
+  	<include refid="orderBy"/>
+  	<include refid="limit"/>
+  </select>
+  
+ <select id="selectPermissionCodes" resultType="string">
+  	SELECT function_code
+  	FROM sys_function
+  	WHERE function_id IN
+  	 <foreach collection="list" item="fId" open="(" close=")" separator=",">
+	 	${fId}
+	 </foreach>
+  </select>
+  
+  <select id="selectFunctionIds" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  	SELECT DISTINCT r_f.function_id
+  	FROM
+  	(SELECT
+  	 group_id
+  	 FROM sys_group_user
+  	 WHERE user_id=#{userId}
+  	) g_u 
+	LEFT JOIN sys_role_group r_g ON g_u.group_id=r_g.group_id 
+	LEFT JOIN sys_role_function r_f on r_g.role_id=r_f.role_id
+  </select>
+  
+  <select id="getTreeNodes" resultMap="tree">
+  	SELECT
+  	function_id, parent_id, function_name, function_url
+  	FROM sys_function
+  </select>
+  
+  <delete id="deleteByFunctionIds">
+  	 DELETE FROM sys_function
+     WHERE function_id IN 
+	 <foreach collection="array" item="functionId" open="(" close=")" separator=",">
+	 	${functionId}
+	 </foreach>
+  </delete>
+  
+  <select id="selectByKey" resultMap="sysFunction" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_function
+    where function_id = #{functionId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByKey" parameterType="java.lang.Integer" >
+    delete from sys_function
+    where function_id = #{functionId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="SysFunction" >
+    insert into sys_function (function_id, function_code, function_name, 
+      parent_id, function_desc, function_url, 
+      function_remark, function_type, create_user, 
+      create_time, update_user, update_time
+      )
+    values (#{functionId,jdbcType=INTEGER}, #{functionCode,jdbcType=VARCHAR}, #{functionName,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=INTEGER}, #{functionDesc,jdbcType=VARCHAR}, #{functionUrl,jdbcType=VARCHAR}, 
+      #{functionRemark,jdbcType=VARCHAR}, #{functionType,jdbcType=INTEGER}, #{createUser,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="SysFunction" useGeneratedKeys="true" keyProperty="functionId">
+    insert into sys_function
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="functionId != null" >
+        function_id,
+      </if>
+      <if test="functionCode != null" >
+        function_code,
+      </if>
+      <if test="functionName != null" >
+        function_name,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="functionDesc != null" >
+        function_desc,
+      </if>
+      <if test="functionUrl != null" >
+        function_url,
+      </if>
+      <if test="functionRemark != null" >
+        function_remark,
+      </if>
+      <if test="functionType != null" >
+        function_type,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="functionId != null" >
+        #{functionId,jdbcType=INTEGER},
+      </if>
+      <if test="functionCode != null" >
+        #{functionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="functionName != null" >
+        #{functionName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="functionDesc != null" >
+        #{functionDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="functionUrl != null" >
+        #{functionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="functionRemark != null" >
+        #{functionRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="functionType != null" >
+        #{functionType,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="SysFunction" >
+    update sys_function
+    <set >
+      <if test="functionCode != null" >
+        function_code = #{functionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="functionName != null" >
+        function_name = #{functionName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="functionDesc != null" >
+        function_desc = #{functionDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="functionUrl != null" >
+        function_url = #{functionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="functionRemark != null" >
+        function_remark = #{functionRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="functionType != null" >
+        function_type = #{functionType,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where function_id = #{functionId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="SysFunction" >
+    update sys_function
+    set function_code = #{functionCode,jdbcType=VARCHAR},
+      function_name = #{functionName,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      function_desc = #{functionDesc,jdbcType=VARCHAR},
+      function_url = #{functionUrl,jdbcType=VARCHAR},
+      function_remark = #{functionRemark,jdbcType=VARCHAR},
+      function_type = #{functionType,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where function_id = #{functionId,jdbcType=INTEGER}
+  </update>
+</mapper>

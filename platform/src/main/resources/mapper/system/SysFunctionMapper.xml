@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkh.platform.dao.system.SysFunctionDao" >
+  <resultMap id="sysFunction" type="SysFunction" >
+    <id column="function_id" property="functionId" javaType="integer" />
+    <result column="function_id" property="functionId" javaType="integer" />
+    <result column="function_code" property="functionCode" javaType="string" />
+    <result column="function_name" property="functionName" javaType="string" />
+    <result column="parent_id" property="parentId" javaType="integer" />
+    <result column="function_desc" property="functionDesc" javaType="string" />
+    <result column="function_url" property="functionUrl" javaType="string" />
+    <result column="function_remark" property="functionRemark" javaType="string" />
+    <result column="function_type" property="functionType" javaType="integer" />
+    <result column="create_user" property="createUser" javaType="integer" />
+    <result column="create_time" property="createTime" javaType="date" />
+    <result column="update_user" property="updateUser" javaType="integer" />
+    <result column="update_time" property="updateTime" javaType="date" />
+  </resultMap>
+  
+  <resultMap id="tree" type="Tree" >
+    <id column="function_id" property="id" jdbcType="INTEGER" />
+    <result column="function_name" property="text" jdbcType="VARCHAR" />
+    <result column="parent_id" property="pId" jdbcType="INTEGER" />
+    <result column="function_url" property="href" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    function_id,<!-- 功能ID -->
+    function_code,<!-- 功能代码 -->
+    function_name,<!-- 功能名称 -->
+    parent_id,<!-- 父级功能ID -->
+    function_desc,<!-- 功能描述 -->
+    function_url,<!-- 功能URL -->
+    function_remark,<!-- 功能备注 -->
+    function_type,<!-- 功能类型 -->
+    create_user,<!-- 创建人 -->
+    create_time,<!-- 创建时间 -->
+    update_user,<!-- 更新人 -->
+    update_time<!-- 更新时间 -->
+  </sql>
+  
+  <!-- 查询select部分  -->
+  <sql id="selector">
+  	SELECT
+  	<if test="fields != null">
+  	 	${fields}
+  	</if>
+  	<if test="fields == null">
+  		<include refid="Base_Column_List"/>
+  	</if>
+  	FROM sys_function
+  </sql>
+  <!-- 查询where语句部分 -->
+  <sql id="where">
+	<where>
+		<if test="functionIds != null and functionIds.size()>0" >
+        	AND function_id IN
+        	<foreach collection="functionIds" item="_functionId" open="(" close=")" separator=",">
+          		${_functionId}
+        	</foreach>
+        </if>
+		<if test="functionId != null">
+			AND function_id = #{functionId}
+		</if>
+		<if test="functionCode != null">
+			AND function_code = #{functionCode}
+		</if>
+		<if test="functionName != null">
+			AND function_name = #{functionName}
+		</if>
+		<if test="parentId != null">
+			AND parent_id = #{parentId}
+		</if>
+		<if test="functionDesc != null">
+			AND function_desc = #{functionDesc}
+		</if>
+		<if test="functionUrl != null">
+			AND function_url = #{functionUrl}
+		</if>
+		<if test="functionRemark != null">
+			AND function_remark = #{functionRemark}
+		</if>
+		<if test="functionType != null">
+			AND function_type = #{functionType}
+		</if>
+		<if test="createUser != null">
+			AND create_user = #{createUser}
+		</if>
+		<if test="createTime != null">
+			AND create_time = #{createTime}
+		</if>
+		<if test="updateUser != null">
+			AND update_user = #{updateUser}
+		</if>
+		<if test="updateTime != null">
+			AND update_time = #{updateTime}
+		</if>
+	</where>
+  </sql>
+  <!-- 查询语句order by 部分 -->
+  <sql id="orderBy">
+  	<if test="orderByFields != null and orderByFields.size>0">
+  		ORDER BY
+  		<foreach collection="orderByFields" item="orderByField" separator=",">
+  			${orderByField.field} ${orderByField.order}
+  		</foreach>
+  	</if>
+  </sql>
+  
+  <sql id="limit">
+  	<if test="startRow != null">
+  		LIMIT  ${startRow},${pageSize}
+  	</if>
+  </sql>
+<!--  *****查询有关  start***** -->
+
+  <!--  条件查询  -->
+  <select id="selectSysFunctionsWithCondition" resultMap="sysFunction" parameterType="SysFunctionQuery">
+  	<include refid="selector"/>
+  	<include refid="where"/>
+  	<include refid="orderBy"/>
+  	<include refid="limit"/>
+  </select>
+  
+  <!--  条件查询对应记录总数  -->
+  <select id="getCountWithCondition" resultType="long" parameterType="SysFunctionQuery">
+  	SELECT count(1)
+  	FROM sys_function
+  	<include refid="where"/>
+  </select>
+  
+  <!-- 通过主键批量查询 -->
+  <select id="selectByFunctionIds" resultMap="sysFunction">
+  	SELECT 
+  	<include refid="Base_Column_List"/>
+  	FROM sys_function
+  	WHERE function_id IN
+  	 <foreach collection="list" item="functionId" open="(" close=")" separator=",">
+	 	${functionId}
+	 </foreach>
+  </select>
+  
+  <!-- 通过主键查询  -->
+  <select id="selectByFunctionId" resultMap="sysFunction" parameterType="integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_function
+    where function_id = #{functionId}
+  </select>
+  
+  <!-- 通过用户ID查询用户拥有的权限ID集合 -->
+  <select id="selectFunctionIds" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  	SELECT DISTINCT r_f.function_id
+  	FROM
+  	(SELECT
+  	 group_id
+  	 FROM sys_group_user
+  	 WHERE user_id=#{userId}
+  	) g_u 
+	LEFT JOIN sys_role_group r_g ON g_u.group_id=r_g.group_id 
+	LEFT JOIN sys_role_function r_f on r_g.role_id=r_f.role_id
+  </select>
+  
+  <!-- 获取树节点，用于拼装成树 -->
+  <select id="getTreeNodes" resultMap="tree">
+  	SELECT
+  	function_id, parent_id, function_name, function_url
+  	FROM sys_function
+  </select>
+  
+  <!-- 获取权限code集合 -->
+  <select id="selectPermissionCodes" resultType="string">
+  	SELECT function_code
+  	FROM sys_function
+  	WHERE function_id IN
+  	 <foreach collection="list" item="fId" open="(" close=")" separator=",">
+	 	${fId}
+	 </foreach>
+  </select>
+<!--  *****查询有关  end***** -->
+
+<!--  *****删除有关  start***** -->
+
+  <!-- 通过主键批量删除 -->
+  <delete id="deleteByFunctionIds">
+  	 DELETE FROM sys_function
+     WHERE function_id IN 
+	 <foreach collection="array" item="functionId" open="(" close=")" separator=",">
+	 	${functionId}
+	 </foreach>
+  </delete>
+  
+  <!-- 通过主键删除 -->
+  <delete id="deleteByFunctionId" parameterType="integer" >
+    delete from sys_function
+    where function_id = #{functionId}
+  </delete>
+  
+<!--  *****删除有关  end***** -->
+
+<!--  *****插入有关  start***** -->
+
+  <!-- 有选择插入字段 NULL忽略-->
+  <insert id="insertSelective" parameterType="SysFunction" useGeneratedKeys="true" keyProperty="functionId">
+    insert into sys_function
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="functionId != null" >
+        function_id,
+      </if>
+      <if test="functionCode != null" >
+        function_code,
+      </if>
+      <if test="functionName != null" >
+        function_name,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="functionDesc != null" >
+        function_desc,
+      </if>
+      <if test="functionUrl != null" >
+        function_url,
+      </if>
+      <if test="functionRemark != null" >
+        function_remark,
+      </if>
+      <if test="functionType != null" >
+        function_type,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="functionId != null" >
+       #{functionId},
+      </if>
+      <if test="functionCode != null" >
+       #{functionCode},
+      </if>
+      <if test="functionName != null" >
+       #{functionName},
+      </if>
+      <if test="parentId != null" >
+       #{parentId},
+      </if>
+      <if test="functionDesc != null" >
+       #{functionDesc},
+      </if>
+      <if test="functionUrl != null" >
+       #{functionUrl},
+      </if>
+      <if test="functionRemark != null" >
+       #{functionRemark},
+      </if>
+      <if test="functionType != null" >
+       #{functionType},
+      </if>
+      <if test="createUser != null" >
+       #{createUser},
+      </if>
+      <if test="createTime != null" >
+       #{createTime},
+      </if>
+      <if test="updateUser != null" >
+       #{updateUser},
+      </if>
+      <if test="updateTime != null" >
+       #{updateTime},
+      </if>
+    </trim>
+  </insert>
+  
+<!--  *****插入有关  end***** -->
+
+<!--  *****更新有关  start***** -->
+  
+  <!-- 选择更新字段 NULL忽略 -->
+  <update id="update" parameterType="SysFunction" >
+    update sys_function
+    <set >
+      <if test="functionCode != null" >
+        function_code = #{functionCode},
+      </if>
+      <if test="functionName != null" >
+        function_name = #{functionName},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId},
+      </if>
+      <if test="functionDesc != null" >
+        function_desc = #{functionDesc},
+      </if>
+      <if test="functionUrl != null" >
+        function_url = #{functionUrl},
+      </if>
+      <if test="functionRemark != null" >
+        function_remark = #{functionRemark},
+      </if>
+      <if test="functionType != null" >
+        function_type = #{functionType},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime},
+      </if>
+    </set>
+    where function_id = #{functionId}
+  </update>
+
+<!--  *****更新有关  end***** -->
+</mapper>

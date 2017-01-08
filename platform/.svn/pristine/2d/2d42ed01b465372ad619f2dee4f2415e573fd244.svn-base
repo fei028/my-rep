@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkh.platform.dao.system.SysRoleFunctionDao" >
+  <resultMap id="sysRoleFunction" type="SysRoleFunction" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="function_id" property="functionId" jdbcType="INTEGER" />
+    <result column="create_user" property="createUser" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="INTEGER" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, role_id, function_id, create_user, create_time, update_user, update_time
+  </sql>
+  
+  <sql id="selector">
+  	SELECT
+  	<if test="fields != null">
+  	  ${fields}
+  	</if>
+  	<if test="fields == null">
+  	  <include refid="Base_Column_List"></include>
+  	</if>
+  	FROM sys_role_function
+  </sql>
+  
+  <sql id="where">
+    <where>
+       <if test="id != null" >
+         AND id = #{id,jdbcType=INTEGER}
+       </if>
+       <if test="roleId != null" >
+         AND role_id = #{roleId,jdbcType=INTEGER}
+       </if>
+       <if test="functionId != null" >
+         AND function_id = #{functionId,jdbcType=INTEGER}
+       </if>
+       <if test="createUser != null" >
+         AND create_user = #{createUser,jdbcType=INTEGER}
+       </if>
+       <if test="createTime != null" >
+         AND create_time = #{createTime,jdbcType=TIMESTAMP}
+       </if>
+       <if test="updateUser != null" >
+         AND update_user = #{updateUser,jdbcType=INTEGER}
+       </if>
+       <if test="updateTime != null" >
+         AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+       </if>
+    </where>
+  </sql>
+  
+ <!-- 查询语句order by 部分 -->
+  <sql id="orderBy">
+  	<if test="orderFields != null and orderByFields.size>0">
+  		ORDER BY
+  		<foreach collection="orderFields" item="orderField" separator=",">
+  			${orderField.field} ${orderField.order}
+  		</foreach>
+  	</if>
+  </sql>
+  
+  <sql id="limit">
+  	<if test="startRow != null">
+  		LIMIT ${startRow},${pageSize}
+  	</if>
+  </sql>
+  <!-- 条件查询 -->
+  <select id="selectSysRoleFunctionsWithCondition" resultMap="sysRoleFunction" parameterType="SysRoleFunctionQuery">
+    <include refid="selector"/>
+  	<include refid="where"/>
+  	<include refid="orderBy"/>
+  	<include refid="limit"/>
+  </select>
+  
+  <delete id="deleteByRoleId" parameterType="integer">
+  	 DELETE FROM sys_role_function
+     WHERE role_id = #{roleId,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteByFunctionId" parameterType="integer">
+  	 DELETE FROM sys_role_function
+     WHERE function_id = #{functionId,jdbcType=INTEGER}
+  </delete>
+  <!-- 按照功能id批量删除 -->
+  <delete id="deleteBySysFunctionIds">
+  	 DELETE FROM sys_role_function
+     WHERE function_id IN
+     <foreach collection="array" item="funId" open="(" close=")" separator=",">
+     	${funId}
+     </foreach>
+  </delete>
+  <insert id="insertSysRoleFunctions" parameterType="java.util.List">
+   insert into sys_role_function 
+   (role_id, function_id, create_user, create_time, update_user, update_time)
+   values 
+   <foreach collection="list" item="sysRoleFunction" separator=",">
+	   (
+	    #{sysRoleFunction.roleId,jdbcType=INTEGER},
+	    #{sysRoleFunction.functionId,jdbcType=INTEGER}, 
+	    #{sysRoleFunction.createUser,jdbcType=INTEGER},
+	    #{sysRoleFunction.createTime,jdbcType=TIMESTAMP}, 
+	    #{sysRoleFunction.updateUser,jdbcType=INTEGER},
+	    #{sysRoleFunction.updateTime,jdbcType=TIMESTAMP}
+	    )
+    </foreach>
+  </insert>
+  <select id="selectByPrimaryKey" resultMap="sysRoleFunction" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role_function
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByKey" parameterType="java.lang.Integer" >
+    delete from sys_role_function
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="SysRoleFunction" useGeneratedKeys="true" keyProperty="id">
+    insert into sys_role_function (id, role_id, function_id, 
+      create_user, create_time, update_user, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{functionId,jdbcType=INTEGER}, 
+      #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="SysRoleFunction" >
+    insert into sys_role_function
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="functionId != null" >
+        function_id,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="functionId != null" >
+        #{functionId,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="SysRoleFunction" >
+    update sys_role_function
+    <set >
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="functionId != null" >
+        function_id = #{functionId,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="SysRoleFunction" >
+    update sys_role_function
+    set role_id = #{roleId,jdbcType=INTEGER},
+      function_id = #{functionId,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

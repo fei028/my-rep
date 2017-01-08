@@ -1,0 +1,47 @@
+package com.xlkh.platform.dao.system;
+
+import java.util.List;
+
+import com.xlkh.platform.pojo.system.SysRoleGroup;
+import com.xlkh.platform.query.system.SysRoleGroupQuery;
+
+public interface SysRoleGroupDao {
+	/**
+	 * 保存
+	 * @param sysRoleGroup
+	 * @return 主键
+	 */
+	public Integer insertSelective(SysRoleGroup sysRoleGroup);
+	/**
+	 * 通过主键删除
+	 * @param id
+	 */
+	public void deleteByKey(Integer id);
+	/**
+	 * 更新
+	 * @param sysRoleGroup
+	 */
+	public void update(SysRoleGroup sysRoleGroup);
+	/**
+	 * 主键查询
+	 * @return
+	 */
+	public SysRoleGroup selectByKey();
+	/**
+	 * 条件查询
+	 * @param sysRoleGroupQuery 查询对象
+	 * @return SysRoleGroup对象集合
+	 */
+	public List<SysRoleGroup> selectSysRoleGroupsWithCondition(SysRoleGroupQuery sysRoleGroupQuery);
+	/**
+	 * 按照角色id进行删除
+	 * @param roleId
+	 */
+	public void deleteByRoleId(Integer roleId);
+	/**
+	 * 根据组id删除
+	 * @param groupId
+	 */
+	public void deleteByGroupId(Integer groupId);
+	
+}

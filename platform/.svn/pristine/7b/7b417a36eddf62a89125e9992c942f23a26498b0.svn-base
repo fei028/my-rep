@@ -1,0 +1,72 @@
+package com.xlkh.platform.query.system;
+
+import java.util.Date;
+
+import com.xlkh.platform.query.BaseQuery;
+
+public class SysRoleFunctionQuery extends BaseQuery{
+
+	/** 关系ID */
+	private Integer id;
+	/** 角色ID */
+	private Integer roleId;
+	/** 功能ID */
+	private Integer functionId;
+	/** 创建人(id) */
+	private Integer createUser;
+	/** 创建时间 */
+	private Date createTime;
+	/** 更新人(id) */
+	private Integer updateUser;
+	/** 更新时间 */
+	private Date updateTime;
+	public Integer getId() {
+		return id;
+	}
+	public SysRoleFunctionQuery setId(Integer id) {
+		this.id = id;
+		return this;
+	}
+	public Integer getRoleId() {
+		return roleId;
+	}
+	public SysRoleFunctionQuery setRoleId(Integer roleId) {
+		this.roleId = roleId;
+		return this;
+	}
+	public Integer getFunctionId() {
+		return functionId;
+	}
+	public SysRoleFunctionQuery setFunctionId(Integer functionId) {
+		this.functionId = functionId;
+		return this;
+	}
+	public Integer getCreateUser() {
+		return createUser;
+	}
+	public SysRoleFunctionQuery setCreateUser(Integer createUser) {
+		this.createUser = createUser;
+		return this;
+	}
+	public Date getCreateTime() {
+		return createTime;
+	}
+	public SysRoleFunctionQuery setCreateTime(Date createTime) {
+		this.createTime = createTime;
+		return this;
+	}
+	public Integer getUpdateUser() {
+		return updateUser;
+	}
+	public SysRoleFunctionQuery setUpdateUser(Integer updateUser) {
+		this.updateUser = updateUser;
+		return this;
+	}
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+	public SysRoleFunctionQuery setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+		return this;
+	}
+}

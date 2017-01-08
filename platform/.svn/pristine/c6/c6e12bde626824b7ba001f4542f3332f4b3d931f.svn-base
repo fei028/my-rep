@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkh.platform.dao.system.SysGroupDao" >
+  <resultMap id="sysGroup" type="SysGroup" >
+    <id column="group_id" property="groupId" javaType="integer" />
+    <result column="group_id" property="groupId" javaType="integer" />
+    <result column="group_name" property="groupName" javaType="string" />
+    <result column="group_desc" property="groupDesc" javaType="string" />
+    <result column="group_remark" property="groupRemark" javaType="string" />
+    <result column="create_user" property="createUser" javaType="integer" />
+    <result column="create_time" property="createTime" javaType="date" />
+    <result column="update_user" property="updateUser" javaType="integer" />
+    <result column="update_time" property="updateTime" javaType="date" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    group_id,<!-- 用户组ID -->
+    group_name,<!-- 用户组名 -->
+    group_desc,<!-- 描述 -->
+    group_remark,<!-- 备注 -->
+    create_user,<!-- 创建人 -->
+    create_time,<!-- 创建时间 -->
+    update_user,<!-- 更新人 -->
+    update_time<!-- 更新时间 -->
+  </sql>
+  
+  <!-- 查询select部分  -->
+  <sql id="selector">
+  	SELECT
+  	<if test="fields != null">
+  	 	${fields}
+  	</if>
+  	<if test="fields == null">
+  		<include refid="Base_Column_List"/>
+  	</if>
+  	FROM sys_group
+  </sql>
+  <!-- 查询where语句部分 -->
+  <sql id="where">
+	<where>
+		<if test="groupId != null">
+			AND group_id = #{groupId}
+		</if>
+		<if test="groupName != null">
+			AND group_name = #{groupName}
+		</if>
+		<if test="groupDesc != null">
+			AND group_desc = #{groupDesc}
+		</if>
+		<if test="groupRemark != null">
+			AND group_remark = #{groupRemark}
+		</if>
+		<if test="createUser != null">
+			AND create_user = #{createUser}
+		</if>
+		<if test="createTime != null">
+			AND create_time = #{createTime}
+		</if>
+		<if test="updateUser != null">
+			AND update_user = #{updateUser}
+		</if>
+		<if test="updateTime != null">
+			AND update_time = #{updateTime}
+		</if>
+	</where>
+  </sql>
+  <!-- 查询语句order by 部分 -->
+  <sql id="orderBy">
+  	<if test="orderByFields != null and orderByFields.size>0">
+  		ORDER BY
+  		<foreach collection="orderByFields" item="orderByField" separator=",">
+  			${orderByField.field} ${orderByField.order}
+  		</foreach>
+  	</if>
+  </sql>
+  
+  <sql id="limit">
+  	<if test="startRow != null">
+  		LIMIT  ${startRow},${pageSize}
+  	</if>
+  </sql>
+<!--  *****查询有关  start***** -->
+
+  <!--  条件查询  -->
+  <select id="selectSysGroupsWithCondition" resultMap="sysGroup" parameterType="SysGroupQuery">
+  	<include refid="selector"/>
+  	<include refid="where"/>
+  	<include refid="orderBy"/>
+  	<include refid="limit"/>
+  </select>
+  
+  <!--  条件查询对应记录总数  -->
+  <select id="getCountWithCondition" resultType="long" parameterType="SysGroupQuery">
+  	SELECT count(1)
+  	FROM sys_group
+  	<include refid="where"/>
+  </select>
+  
+  <!-- 通过主键批量查询 -->
+  <select id="selectByGroupIds" resultMap="sysGroup">
+  	SELECT 
+  	<include refid="Base_Column_List"/>
+  	FROM sys_group
+  	WHERE group_id IN
+  	 <foreach collection="list" item="groupId" open="(" close=")" separator=",">
+	 	${groupId}
+	 </foreach>
+  </select>
+  
+  <!-- 通过主键查询  -->
+  <select id="selectByGroupId" resultMap="sysGroup" parameterType="integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_group
+    where group_id = #{groupId}
+  </select>
+  
+<!--  *****查询有关  end***** -->
+
+<!--  *****删除有关  start***** -->
+
+  <!-- 通过主键批量删除 -->
+  <delete id="deleteByGroupIds">
+  	 DELETE FROM sys_group
+     WHERE group_id IN 
+	 <foreach collection="array" item="groupId" open="(" close=")" separator=",">
+	 	${groupId}
+	 </foreach>
+  </delete>
+  
+  <!-- 通过主键删除 -->
+  <delete id="deleteByGroupId" parameterType="integer" >
+    delete from sys_group
+    where group_id = #{groupId}
+  </delete>
+  
+<!--  *****删除有关  end***** -->
+
+<!--  *****插入有关  start***** -->
+
+  <!-- 有选择插入字段 NULL忽略-->
+  <insert id="insertSelective" parameterType="SysGroup" useGeneratedKeys="true" keyProperty="groupId">
+    insert into sys_group
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        group_id,
+      </if>
+      <if test="groupName != null" >
+        group_name,
+      </if>
+      <if test="groupDesc != null" >
+        group_desc,
+      </if>
+      <if test="groupRemark != null" >
+        group_remark,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+       #{groupId},
+      </if>
+      <if test="groupName != null" >
+       #{groupName},
+      </if>
+      <if test="groupDesc != null" >
+       #{groupDesc},
+      </if>
+      <if test="groupRemark != null" >
+       #{groupRemark},
+      </if>
+      <if test="createUser != null" >
+       #{createUser},
+      </if>
+      <if test="createTime != null" >
+       #{createTime},
+      </if>
+      <if test="updateUser != null" >
+       #{updateUser},
+      </if>
+      <if test="updateTime != null" >
+       #{updateTime},
+      </if>
+    </trim>
+  </insert>
+  
+<!--  *****插入有关  end***** -->
+
+<!--  *****更新有关  start***** -->
+  
+  <!-- 选择更新字段 NULL忽略 -->
+  <update id="update" parameterType="SysGroup" >
+    update sys_group
+    <set >
+      <if test="groupName != null" >
+        group_name = #{groupName},
+      </if>
+      <if test="groupDesc != null" >
+        group_desc = #{groupDesc},
+      </if>
+      <if test="groupRemark != null" >
+        group_remark = #{groupRemark},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime},
+      </if>
+    </set>
+    where group_id = #{groupId}
+  </update>
+
+<!--  *****更新有关  end***** -->
+</mapper>

@@ -1,0 +1,40 @@
+package com.xlkh.platform.service.system;
+
+import java.util.List;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.xlkh.platform.dao.system.SysUserDao;
+import com.xlkh.platform.pojo.system.SysUser;
+import com.xlkh.platform.query.system.SysUserQuery;
+
+@Service
+@Transactional(readOnly = true)
+public class SysUserServiceImpl implements SysUserService{
+
+	@Autowired
+	private SysUserDao sysUserDao;
+
+	@Override
+	public List<SysUser> getSysUsers(Integer pageNo, String username,boolean isAllField) {
+		SysUserQuery sysUserQuery = new SysUserQuery();
+		if(!isAllField){
+			// id 用户名 	姓名 	移动电话 	邮箱 	用户组 	用户状态
+			String fields = "user_id,user_name,real_name,user_mobile,user_email,user_status";
+			sysUserQuery.setFields(fields);
+		}
+		//sysUserQuery.setPageNo(pageNo);
+		//sysUserQuery.setRealName(username);
+		return  sysUserDao.selectSysUsersWithCondition(sysUserQuery);
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public void saveSysUser(SysUser sysUser) {
+		sysUserDao.insertSelective(sysUser);
+	}
+
+}

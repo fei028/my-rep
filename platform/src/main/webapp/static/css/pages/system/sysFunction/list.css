@@ -1,0 +1,141 @@
+.fixedbody {
+	overflow:auto; 
+	background: white;
+}
+.nav-path {
+	width:100%;
+	background:#F7F7F7;
+	padding:0;
+	margin:0;
+}
+.nav-path ul {
+	padding:0;
+	margin:0;
+	line-height:40px;
+	padding-left:22px;
+	min-height:40px;
+}
+.nav-path ul  li{
+	float:left;
+}
+.nav-breadcrumb > li + li:before {
+	content:">";
+	padding:0 5px;
+}
+.theme-condition {
+	padding-top:20px;
+	padding-bottom:20px;
+}
+.theme-condition label{
+	font-size:14px;
+	padding-right:8px;
+	padding-left:20px;
+	font-weight:normal;
+}
+.theme-content {
+	padding-left:20px; 
+	padding-right:20px;
+}
+.dvThead{
+	border-top:1px solid #F7F7F7;
+	border-left:1px solid #F7F7F7;
+	border-right:1px solid #F7F7F7;
+	margin-bottom:0;
+}
+.dvThead table{
+	margin-bottom:0;
+	padding-bottom:0;
+}
+.dvThead table thead th {
+	border-bottom:none;
+}
+.dvTbody{
+	border:1px solid #F7F7F7;
+	border-bottom:none;
+	border-top:none;
+	height: 480px;
+	overflow: auto;
+	margin-top:0;
+	margin-bottom:0;
+}
+.dvTbody table{
+	margin-top:0;
+	padding-top:0;
+	margin-bottom:0;
+	padding-bottom:0;
+}
+.dvTbody table tr:last-child{
+	border-bottom:1px solid #F7F7F7;
+}
+.dvTbody>table>tbody {
+	height: 
+}
+.vertical-center{
+	height: 100%;
+	vertical-align: center;
+}
+.page-control {
+	width:100%;
+	margin-bottom:0;
+	height: 100%;
+	vertical-align: center;
+/* 	border:1px solid; */
+	float:left;
+}
+.page-control .check-input {
+	float:left;
+	padding-left:10px;
+	padding-top:5px;
+}
+.page-control .pageBtn{
+	float:left;
+	padding-top:0px;
+	padding-left:30px;
+}
+.page-control .pageDiv {
+	float:right;
+	padding-right:25px;
+}
+.pageDiv  span {
+	font-size:12px;
+}
+.pageDiv > span > select {
+	
+}
+.box {
+	position: relative;
+    padding: 6px 2px;
+    margin-left: 6px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+.btn {
+	
+}
+.pagination {
+	padding-left:10px;
+	margin: 0;
+}
+.pagination > li:first-child > a, .pagination > li:first-child > span {
+    margin-left: 0px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+/* .pagination .prePage a{
+	border-top-left-radius: 0px; 
+} */
+.pagination li.page-num input{
+	
+}
+.pagination li.page-num input {
+	width:40px;	
+}
+.pagination > li > button {
+	padding-left: 10px;
+	padding-right: 10px;
+}

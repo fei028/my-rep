@@ -1,0 +1,97 @@
+package com.xlkh.platform.query.system;
+
+import java.util.Date;
+
+import com.xlkh.platform.query.BaseQuery;
+
+public class SysRoleQuery extends BaseQuery{
+
+	/** 角色ID */
+	private Integer roleId;
+	/** 角色名称 */
+	private String roleName;
+	/** 角色描述 */
+	private String roleDesc; 
+	/** 角色备注 */
+	private String roleRemark; 
+	/** 创建人(id) */
+	private Integer createUser; 
+	/** 创建时间 */
+	private Date createTime;
+	/** 更新人(id) */
+	private Integer updateUser;
+	/** 更新时间 */
+	private Date updateTime;
+	
+	public Integer getRoleId() {
+		return roleId;
+	}
+
+	public SysRoleQuery setRoleId(Integer roleId) {
+		this.roleId = roleId;
+		return this;
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public SysRoleQuery setRoleName(String roleName) {
+		this.roleName = roleName == null ? null : roleName.trim();
+		return this;
+	}
+
+	public String getRoleDesc() {
+		return roleDesc;
+	}
+
+	public SysRoleQuery setRoleDesc(String roleDesc) {
+		this.roleDesc = roleDesc == null ? null : roleDesc.trim();
+		return this;
+	}
+
+	public String getRoleRemark() {
+		return roleRemark;
+	}
+
+	public SysRoleQuery setRoleRemark(String roleRemark) {
+		this.roleRemark = roleRemark == null ? null : roleRemark.trim();
+		return this;
+	}
+
+	public Integer getCreateUser() {
+		return createUser;
+	}
+
+	public SysRoleQuery setCreateUser(Integer createUser) {
+		this.createUser = createUser;
+		return this;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public SysRoleQuery setCreateTime(Date createTime) {
+		this.createTime = createTime;
+		return this;
+	}
+
+	public Integer getUpdateUser() {
+		return updateUser;
+	}
+
+	public SysRoleQuery setUpdateUser(Integer updateUser) {
+		this.updateUser = updateUser;
+		return this;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public SysRoleQuery setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+		return this;
+	}
+}

@@ -1,0 +1,89 @@
+package com.xlkh.platform.dao.system;
+
+import java.util.List;
+
+import com.xlkh.platform.pojo.system.SysRoleGroup;
+import com.xlkh.platform.query.system.SysRoleGroupQuery;
+
+/**
+ * 
+ * @author fei
+ *
+ */
+public interface SysRoleGroupDao {
+
+	/**
+	 * 新增,pojo中属性为NULL值不插入对应数据库中字段
+	 * @param sysRoleGroup
+	 * @return
+	 */
+	public void insertSelective(SysRoleGroup sysRoleGroup);
+	
+	/**
+	 * 通过主键删除
+	 * @param 
+	 */
+	public void deleteById(Integer id);
+	
+	/**
+	 * 批量删除
+	 * @param Ids 主键集合
+	 */
+	public void deleteByIds(Integer[] ids);
+	
+	/**
+	 * 更新,pojo中属性为NULL值不更新对应数据库中字段
+	 * @param sysRoleGroup
+	 */
+	public void update(SysRoleGroup sysRoleGroup);
+	
+	/**
+	 * 通过主键查询获取SysRoleGroup对象
+	 * @param id 主键id
+	 * @return SysRoleGroup对象
+	 */
+	public SysRoleGroup selectById(Integer id);
+	
+	/**
+	 * 通过主键集合查询获取SysRoleGroup对象集合
+	 * @param id 主键id
+	 * @return SysRoleGroup对象集合
+	 */
+	public List<SysRoleGroup> selectByIds(List<Integer> ids);
+	
+	/**
+	 * 条件查询
+	 * @param sysRoleGroupQuery
+	 * @return 符合条件的结果集
+	 */
+	public List<SysRoleGroup> selectSysRoleGroupsWithCondition(SysRoleGroupQuery sysRoleGroupQuery);
+	
+	/**
+	 * 条件查询,对应结果集记录总数
+	 * @param sysRoleGroupQuery
+	 * @return 记录总数
+	 */
+	public Long getCountWithCondition(SysRoleGroupQuery sysRoleGroupQuery);
+	/**
+	 * 按照角色id进行删除
+	 * @param roleId
+	 */
+	public void deleteByRoleId(Integer roleId);
+	/**
+	 * 根据组id删除
+	 * @param groupId
+	 */
+	public void deleteByGroupId(Integer groupId);
+
+	/**
+	 * 通过角色Id进行批量删除
+	 * @param roleIds
+	 */
+	public void deleteByRoleIds(Integer[] roleIds);
+
+	/**
+	 * 通过组Id进行批量删除
+	 * @param groupIds
+	 */
+	public void deleteByGroupIds(Integer[] groupIds);
+}

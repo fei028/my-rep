@@ -1,0 +1,10 @@
+package com.xlkh.platform.web;
+/**
+ * 常量类
+ * @author fei
+ *
+ */
+public class Constant {
+	/** */
+	public static final String ACTIVEUSER_SESSION="activeUser";
+}

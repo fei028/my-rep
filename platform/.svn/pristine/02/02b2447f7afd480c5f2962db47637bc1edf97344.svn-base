@@ -1,0 +1,201 @@
+package com.xlkh.platform.controller.system;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.xlkh.platform.common.web.ResponseUtils;
+import com.xlkh.platform.pojo.system.ActiveUser;
+import com.xlkh.platform.pojo.system.SysFunction;
+import com.xlkh.platform.pojo.system.SysRole;
+import com.xlkh.platform.service.system.SysFunctionService;
+import com.xlkh.platform.service.system.SysRoleService;
+import com.xlkh.platform.service.system.SysService;
+import com.xlkh.platform.web.Constant;
+import com.xlkh.platform.web.annotation.PermissionChange;
+
+/**
+ * 
+ * @author fei
+ *
+ */
+@Controller
+@RequestMapping(value = "/system/sysFunction")
+public class SysFounctionController {
+
+	@Autowired
+	private SysFunctionService sysFunctionService;
+	@Autowired
+	private SysRoleService sysRoleService;
+	@Autowired
+	private SysService sysService;
+	/**
+	 * 权限管理主页
+	 * @return
+	 */
+	@RequestMapping(value = "/sysFunctionMain.do")
+	@RequiresPermissions(value ={"system:function:manager"})
+	public String sysFunctionMain(){
+		return "system/sysFunction/sysFunctionMain";
+	}
+	/**
+	 * 权限列表
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/list.do")
+	public String list(Model model){
+		// 获取全部权限集合
+		List<SysFunction> sysFunctions = sysFunctionService.getAllSysFunction(false);
+		model.addAttribute("sysFunctions", sysFunctions);
+		return "system/sysFunction/list";
+	}
+	/**
+	 * 跳转到权限添加页面
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/toAddUI.do")
+	public String toAddUI(Model model){
+		// 获取全部权限集合(权限id+权限名称)
+		List<SysFunction> sysFunctions = sysFunctionService.getAllSysFunctionIdAndName();
+		model.addAttribute("sysFunctions", sysFunctions);
+		return "system/sysFunction/add";
+	}
+	
+	/**
+	 * 添加权限
+	 * @param model
+	 * @return
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "/add.do",method = RequestMethod.POST)
+	public void add(SysFunction sysFunction,HttpServletResponse response) throws IOException{
+		String msg = "保存成功";
+		// 添加之前验证权限名称是否已经存在
+		if(!sysFunctionService.isExistFunctionName(sysFunction.getFunctionName())){
+			// 添加之前验证权限代码是否已经存在，存在则不进行保存操作
+			if(!sysFunctionService.isExistFunctionCode(sysFunction.getFunctionCode())){
+				sysFunctionService.addSysFunction(sysFunction);
+			}else{
+				// 权限代码已经存在 ,提示用户已存在
+				msg = "您输入的权限代码已存在,请重新修改在进行保存操作";
+			}
+		}else{
+			msg = "您输入的权限名称已存在,请重新修改在进行保存操作";
+		}
+	
+		ResponseUtils.sendText(response, msg);
+	}
+	
+	
+	@RequestMapping(value = "/tree.do")
+	public String tree(Model model) {
+		String treeData = sysFunctionService.getTreeData();
+		model.addAttribute("treeData", treeData);
+		return "system/sysFunction/tree";
+	}
+	/**
+	 * 授权界面
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/authorization.do")
+	public String authorization(Model model) {
+		List<SysFunction> sysFunctions = sysFunctionService.getAllMenus();
+		List<SysRole> sysRoles = sysRoleService.getSysRoles(false);
+	
+		model.addAttribute("sysFunctions", sysFunctions);
+		model.addAttribute("sysRoles", sysRoles);
+		return "system/sysFunction/authorization";
+	}
+	@RequestMapping(value = "/getSysFunctionTbody.do")
+	public String getSysFunctionTbody(Integer roleId, Model model){
+		List<SysFunction> sysFunctions = sysFunctionService.getAllMenus();
+		List<SysRole> sysRoles = sysRoleService.getSysRoles(false);
+		
+		
+		model.addAttribute("sysFunctions", sysFunctions);
+		model.addAttribute("sysRoles", sysRoles);
+
+		Map<Integer,Integer> sysRoleFunctionMap = null;
+		if(roleId != null && roleId != -1){
+			// 查询角色已经拥有的权限集合
+			sysRoleFunctionMap = sysFunctionService.getSysRoleFunctionMapByRoleId(roleId);
+		}
+		
+		model.addAttribute("sysRoleFunctionMap", sysRoleFunctionMap);
+		return "system/sysFunction/sysFunctionTbody";
+	}
+	/**
+	 * 为角色授权
+	 * @param ids 权限id的集合串 形如 id1,id2
+	 * @param roleId 角色id
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "/authorize.do",method = RequestMethod.POST)
+	@PermissionChange
+	public void authorizeForSysRole(Integer[] ids,Integer roleId,HttpServletResponse response) throws IOException{
+		String msg = "授权成功";
+		if(roleId == -1){
+			msg = "请先选择角色,在进行授权操作";
+		}else{
+			sysService.authorize(ids,roleId);
+		}
+		ResponseUtils.sendText(response, msg);
+	}
+	/**
+	 * 删除多项(>=0)权限
+	 * @param functionIds
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/del.do")
+	public String del(Integer[] functionIds,Model model){
+		sysFunctionService.deleteByFunctionIds(functionIds);
+		return this.list(model);
+	}
+	/**
+	 * 跳转到权限编辑页面
+	 * @param functionId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/toEditUI.do")
+	public String toEditUI(Integer functionId, Model model){
+		SysFunction sysFunction = sysFunctionService.getSysFunctionByKey(functionId);
+		// 获取全部权限集合(权限id+权限名称)
+		List<SysFunction> sysFunctions = sysFunctionService.getAllSysFunctionIdAndName();
+		
+		model.addAttribute("sysFunctions", sysFunctions);
+		model.addAttribute("sysFunction", sysFunction);
+		return "system/sysFunction/edit";
+	}
+	/**
+	 * 修改权限信息
+	 * @param sysFunction
+	 * @param response
+	 * @param session
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/edit.do")
+	public void edit(SysFunction sysFunction, HttpServletResponse response, HttpSession session) throws IOException{
+		sysFunction.setUpdateTime(new Date());
+		ActiveUser activeUser = (ActiveUser) session.getAttribute(Constant.ACTIVEUSER_SESSION);
+		sysFunction.setUpdateUser(activeUser.getUserId());
+		sysFunctionService.edit(sysFunction);
+		ResponseUtils.sendText(response, "修改成功");
+	}
+
+}

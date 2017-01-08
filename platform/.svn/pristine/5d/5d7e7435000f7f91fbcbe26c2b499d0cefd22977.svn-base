@@ -1,0 +1,57 @@
+package com.xlkh.platform.dao.system;
+
+import java.util.List;
+
+import com.xlkh.platform.pojo.system.SysRoleFunction;
+import com.xlkh.platform.query.system.SysRoleFunctionQuery;
+
+public interface SysRoleFunctionDao {
+	/**
+	 * 保存
+	 * @param sysRoleFunction
+	 * @return
+	 */
+	public Integer insertSelective(SysRoleFunction sysRoleFunction);
+	/**
+	 * 删除
+	 * @param id
+	 */
+	public void deleteByKey(Integer id);
+	/**
+	 * 更新
+	 * @param sysRoleFunction
+	 */
+	public void update(SysRoleFunction sysRoleFunction);
+	/**
+	 * 主键查询
+	 * @param id
+	 * @return
+	 */
+	public SysRoleFunction selectByKey(Integer id);
+	/**
+	 * 条件查询
+	 * @param sysRoleFunctionQuery
+	 * @return
+	 */
+	public List<SysRoleFunction> selectSysRoleFunctionsWithCondition(SysRoleFunctionQuery sysRoleFunctionQuery);
+	/**
+	 * 通过角色id删除
+	 * @param roleId
+	 */
+	public void deleteByRoleId(Integer roleId);
+	/**
+	 * 批量插入
+	 * @param sysRoleFunctions
+	 */
+	public void insertSysRoleFunctions(List<SysRoleFunction> sysRoleFunctions);
+	/**
+	 * 按照权限id删除
+	 * @param functionId
+	 */
+	public void deleteByFunctionId(Integer functionId);
+	/**
+	 * 按照functionId集合批量删除
+	 * @param functionIds
+	 */
+	public void deleteBySysFunctionIds(Integer[] functionIds);
+}

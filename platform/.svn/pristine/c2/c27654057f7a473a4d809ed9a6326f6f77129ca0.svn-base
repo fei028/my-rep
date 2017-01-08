@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkh.platform.dao.system.SysUserDao" >
+  <resultMap id="sysUser" type="SysUser" >
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_password" property="userPassword" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="user_status" property="userStatus" jdbcType="VARCHAR" />
+    <result column="user_desc" property="userDesc" jdbcType="VARCHAR" />
+    <result column="user_telephone" property="userTelephone" jdbcType="VARCHAR" />
+    <result column="user_mobile" property="userMobile" jdbcType="VARCHAR" />
+    <result column="user_email" property="userEmail" jdbcType="VARCHAR" />
+    <result column="user_remark" property="userRemark" jdbcType="VARCHAR" />
+    <result column="password_reset_time" property="passwordResetTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="INTEGER" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    user_id, user_name, user_password, real_name, user_status, user_desc, user_telephone, 
+    user_mobile, user_email, user_remark, password_reset_time, create_user, create_time, 
+    update_user, update_time
+  </sql>
+  
+  <!-- 查询select部分  -->
+  <sql id="selector">
+  	SELECT
+  	<if test="fields != null">
+  	 	${fields}
+  	</if>
+  	<if test="fields == null">
+  		<include refid="Base_Column_List"/>
+  	</if>
+  	FROM sys_user
+  </sql>
+  <!-- 查询where语句部分 -->
+  <sql id="where">
+	<where>
+		<if test="userId != null">
+			AND user_id = #{userId,jdbcType=INTEGER}
+		</if>
+		<if test="userName != null">
+			AND user_name = #{userName,jdbcType=VARCHAR}
+		</if>
+		<if test="userPassword != null">
+			AND user_password = #{userPassword,jdbcType=VARCHAR}
+		</if>
+		<if test="realName != null">
+			AND real_name = #{realName,jdbcType=VARCHAR}
+		</if>
+		<if test="userStatus != null">
+			AND user_status = #{userStatus,jdbcType=VARCHAR}
+		</if>
+		<if test="userDesc != null">
+			AND user_desc = #{userDesc,jdbcType=VARCHAR}
+		</if>
+		<if test="userTelephone != null">
+			AND user_telephone = #{userTelephone,jdbcType=VARCHAR}
+		</if>
+		<if test="userMobile != null">
+			AND user_mobile = #{userMobile,jdbcType=VARCHAR}
+		</if>
+		<if test="userEmail != null">
+			AND user_email = #{userEmail,jdbcType=VARCHAR}
+		</if>
+		<if test="userRemark != null">
+			AND user_remark = #{userRemark,jdbcType=VARCHAR}
+		</if>
+		<if test="passwordResetTime != null">
+			AND password_reset_time = #{passwordResetTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="createUser != null">
+			AND create_user = #{createUser,jdbcType=INTEGER}
+		</if>
+		<if test="createTime != null">
+			AND create_time = #{createTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="updateUser != null">
+			AND update_user = #{updateUser,jdbcType=INTEGER}
+		</if>
+		<if test="updateTime != null">
+			AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+		</if>
+	</where>
+  </sql>
+  <!-- 查询语句order by 部分 -->
+  <sql id="orderBy">
+  	<if test="orderFields != null and orderByFields.size>0">
+  		ORDER BY
+  		<foreach collection="orderFields" item="orderField" separator=",">
+  			${orderField.field} ${orderField.order}
+  		</foreach>
+  	</if>
+  </sql>
+  
+  <sql id="limit">
+  	<if test="startRow != null">
+  		LIMIT ${startRow},${pageSize}
+  	</if>
+  </sql>
+  <!--  条件查询  -->
+  <select id="selectSysUsersWithCondition" resultMap="sysUser" parameterType="SysUserQuery">
+  	<include refid="selector"/>
+  	<include refid="where"/>
+  	<include refid="orderBy"/>
+  	<include refid="limit"/>
+  </select>
+   <!--  条件查询  -->
+  <select id="selectSysUsersWithConditionReturnCount" resultType="integer" parameterType="SysUserQuery">
+  	SELECT
+  	count(user_id)
+  	FROM sys_user
+  	<include refid="where"/>
+  </select>
+  <!-- 通过帐号查询用户信息 -->
+  <select id="findSysUserBySysUserAccount" resultMap="sysUser" parameterType="java.lang.String">
+  	SELECT
+  	user_id, user_name, user_password, real_name, user_status
+  	FROM sys_user
+  	WHERE user_name = #{userName}
+  </select>
+  
+  <select id="selectSysUserByKey" resultMap="sysUser" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_user
+    where user_id = #{userId,jdbcType=INTEGER} limit 1
+  </select>
+  <delete id="deleteByKey" parameterType="java.lang.Integer" >
+    delete from sys_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="SysUser" >
+    insert into sys_user (user_id, user_name, user_password, 
+      real_name, user_status, user_desc, 
+      user_telephone, user_mobile, user_email, 
+      user_remark, password_reset_time, create_user, 
+      create_time, update_user, update_time
+      )
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR}, 
+      #{realName,jdbcType=VARCHAR}, #{userStatus,jdbcType=VARCHAR}, #{userDesc,jdbcType=VARCHAR}, 
+      #{userTelephone,jdbcType=VARCHAR}, #{userMobile,jdbcType=VARCHAR}, #{userEmail,jdbcType=VARCHAR}, 
+      #{userRemark,jdbcType=VARCHAR}, #{passwordResetTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
+    insert into sys_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="userPassword != null" >
+        user_password,
+      </if>
+      <if test="realName != null" >
+        real_name,
+      </if>
+      <if test="userStatus != null" >
+        user_status,
+      </if>
+      <if test="userDesc != null" >
+        user_desc,
+      </if>
+      <if test="userTelephone != null" >
+        user_telephone,
+      </if>
+      <if test="userMobile != null" >
+        user_mobile,
+      </if>
+      <if test="userEmail != null" >
+        user_email,
+      </if>
+      <if test="userRemark != null" >
+        user_remark,
+      </if>
+      <if test="passwordResetTime != null" >
+        password_reset_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null" >
+        #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null" >
+        #{userStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userDesc != null" >
+        #{userDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="userTelephone != null" >
+        #{userTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="userMobile != null" >
+        #{userMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null" >
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userRemark != null" >
+        #{userRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="passwordResetTime != null" >
+        #{passwordResetTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="SysUser" >
+    update sys_user
+    <set >
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null" >
+        user_password = #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null" >
+        user_status = #{userStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userDesc != null" >
+        user_desc = #{userDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="userTelephone != null" >
+        user_telephone = #{userTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="userMobile != null" >
+        user_mobile = #{userMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null" >
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userRemark != null" >
+        user_remark = #{userRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="passwordResetTime != null" >
+        password_reset_time = #{passwordResetTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="SysUser" >
+    update sys_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      user_password = #{userPassword,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      user_status = #{userStatus,jdbcType=VARCHAR},
+      user_desc = #{userDesc,jdbcType=VARCHAR},
+      user_telephone = #{userTelephone,jdbcType=VARCHAR},
+      user_mobile = #{userMobile,jdbcType=VARCHAR},
+      user_email = #{userEmail,jdbcType=VARCHAR},
+      user_remark = #{userRemark,jdbcType=VARCHAR},
+      password_reset_time = #{passwordResetTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>

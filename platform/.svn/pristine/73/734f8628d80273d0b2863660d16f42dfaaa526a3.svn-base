@@ -1,0 +1,91 @@
+package com.xlkh.platform.dao.system;
+
+import java.util.List;
+
+import com.xlkh.platform.pojo.system.SysRoleFunction;
+import com.xlkh.platform.query.system.SysRoleFunctionQuery;
+
+/**
+ * 
+ * @author fei
+ *
+ */
+public interface SysRoleFunctionDao {
+
+	/**
+	 * 新增,pojo中属性为NULL值不插入对应数据库中字段
+	 * @param sysRoleFunction
+	 * @return
+	 */
+	public void insertSelective(SysRoleFunction sysRoleFunction);
+	
+	/**
+	 * 通过主键删除
+	 * @param 
+	 */
+	public void deleteById(Integer id);
+	
+	/**
+	 * 批量删除
+	 * @param Ids 主键集合
+	 */
+	public void deleteByIds(Integer[] ids);
+	
+	/**
+	 * 更新,pojo中属性为NULL值不更新对应数据库中字段
+	 * @param sysRoleFunction
+	 */
+	public void update(SysRoleFunction sysRoleFunction);
+	
+	/**
+	 * 通过主键查询获取SysRoleFunction对象
+	 * @param id 主键id
+	 * @return SysRoleFunction对象
+	 */
+	public SysRoleFunction selectById(Integer id);
+	
+	/**
+	 * 通过主键集合查询获取SysRoleFunction对象集合
+	 * @param id 主键id
+	 * @return SysRoleFunction对象集合
+	 */
+	public List<SysRoleFunction> selectByIds(List<Integer> ids);
+	
+	/**
+	 * 条件查询
+	 * @param sysRoleFunctionQuery
+	 * @return 符合条件的结果集
+	 */
+	public List<SysRoleFunction> selectSysRoleFunctionsWithCondition(SysRoleFunctionQuery sysRoleFunctionQuery);
+	
+	/**
+	 * 条件查询,对应结果集记录总数
+	 * @param sysRoleFunctionQuery
+	 * @return 记录总数
+	 */
+	public Long getCountWithCondition(SysRoleFunctionQuery sysRoleFunctionQuery);
+	
+	/**
+	 * 通过角色id删除
+	 * @param roleId
+	 */
+	public void deleteByRoleId(Integer roleId);
+	
+	/**
+	 * 按照权限id删除
+	 * @param functionId
+	 */
+	public void deleteByFunctionId(Integer functionId);
+	
+	/**
+	 * 按照functionId集合批量删除
+	 * @param functionIds
+	 */
+	public void deleteBySysFunctionIds(Integer[] functionIds);
+	
+	/**
+	 * 批量插入
+	 * @param sysRoleFunctions
+	 */
+	public void insertSysRoleFunctions(List<SysRoleFunction> sysRoleFunctions);
+}

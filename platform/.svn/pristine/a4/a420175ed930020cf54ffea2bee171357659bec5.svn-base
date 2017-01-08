@@ -1,0 +1,33 @@
+body{
+	margin:0;
+	padding:0;
+	font-family:'微软雅黑', 'Microsoft Yahei';
+	font-size:14px;
+	overflow-x:hidden;
+	overflow-y:hidden;
+}
+a , a:hover , a:visited{
+	text-decoration:none;
+}
+ul {
+	list-style:none;
+}
+/*graphy define*/
+.icon {
+	background:url(../../image/sup.png) no-repeat center;
+}
+/*user Manager icon*/
+.icon-sup {
+	
+}
+.icon-bell {
+	background:url(../../image/message_icon.png) no-repeat center;
+}
+.icon-select {
+	background:url(../../image/select_icon.png) no-repeat center;
+}
+/*right pointer icon*/
+.icon-angle-right {
+	background:url(../../image/right_pointer_default.png) no-repeat center;
+}
+ 

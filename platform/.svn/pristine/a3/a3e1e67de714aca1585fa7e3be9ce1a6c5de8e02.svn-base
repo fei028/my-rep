@@ -1,0 +1,11 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>去登录页</title>
+	<link href="./img/favicon.ico" rel="icon" type="image/x-icon" />
+	<meta http-equiv="refresh" content="0;url=./home/home.do">
+</head>
+<body>
+</body>
+</html>

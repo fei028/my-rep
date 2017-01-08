@@ -1,0 +1,102 @@
+.fixedbody {
+	overflow:hidden;
+}
+.nav-path {
+	width:100%;
+	padding:0;
+	margin:0;
+}
+.nav-path ul {
+	padding:0;
+	margin:0;
+	line-height:40px;
+	padding-left:22px;
+	min-height:40px;
+}
+.nav-path ul  li{
+	float:left;
+}
+.nav-breadcrumb > li + li:before {
+	content:">";
+	padding:0 5px;
+}
+.theme-condition {
+	padding-top:20px;
+	padding-bottom:20px;
+}
+.theme-condition label{
+	font-size:14px;
+	padding-right:8px;
+	padding-left:20px;
+	font-weight:normal;
+}
+.theme-content {
+	padding-left:20px; 
+	padding-right:20px;
+}
+.dvThead{
+	border-top:1px solid;
+	border-left:1px solid;
+	border-right:1px solid;
+	margin-bottom:0;
+}
+.dvThead table{
+	margin-bottom:0;
+	padding-bottom:0;
+}
+.dvThead table thead th {
+	border-bottom:none;
+}
+.dvTbody{
+	border:1px solid;
+	border-bottom:none;
+	border-top:none;
+	height: 480px;
+	overflow: auto;
+	margin-top:0;
+	margin-bottom:0;
+}
+.dvTbody table{
+	margin-top:0;
+	padding-top:0;
+	margin-bottom:0;
+	padding-bottom:0;
+}
+.dvTbody table tr:last-child{
+	border-bottom:1px solid;
+}
+.dvTbody>table>tbody {
+	height: 
+}
+.page-control {
+	width:100%;
+	margin-bottom:0;
+	border:1px solid;
+	float:left;
+}
+.page-control .check-input {
+	float:left;
+	padding-left:10px;
+	padding-top:25px;
+}
+.page-control .pageBtn{
+	float:left;
+	padding-top:20px;
+	padding-left:30px;
+}
+.page-control .pageDiv {
+	float:right;
+	padding-right:25px;
+}
+.pageDiv  span {
+	font-size:12px;
+}
+.pagination {
+	padding-left:10px;
+}
+.pagination li.page-num {
+	padding-left:20px;
+}
+.pagination li.page-num input {
+	width:40px;	
+}

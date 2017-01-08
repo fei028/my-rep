@@ -1,0 +1,47 @@
+package com.xlkh.platform.controller.system;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.xlkh.platform.pojo.system.SysRole;
+import com.xlkh.platform.service.system.SysRoleService;
+import com.xlkh.platform.web.annotation.PermissionChange;
+/**
+ * 角色控制器
+ * @author fei
+ *
+ */
+@Controller
+@RequestMapping(value="/system/sysRole")
+public class SysRoleController {
+	
+	@Autowired
+	private SysRoleService sysRoleService;
+	/**
+	 * 角色管理主页
+	 * @return
+	 */
+	@RequestMapping(value="/sysRoleMain.do")
+	public String sysRoleMain(){
+		return "system/sysRole/sysRoleMain";
+	}
+	/**
+	 * 添加角色
+	 * @param sysRole
+	 */
+	@RequestMapping(value = "/add.do")
+	public void add(SysRole sysRole){
+		sysRoleService.save(sysRole);
+	}
+	
+	/**
+	 * 删除角色
+	 * @param roleId
+	 */
+	@RequestMapping(value = "/del.do")
+	@PermissionChange
+	public void del(Integer roleId){
+		sysRoleService.delSysRoleByKey(roleId);
+	}
+}

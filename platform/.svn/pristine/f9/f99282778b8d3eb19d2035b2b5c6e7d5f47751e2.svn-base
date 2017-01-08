@@ -1,0 +1,56 @@
+package com.xlkh.platform.service.system;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.xlkh.platform.dao.system.SysRoleDao;
+import com.xlkh.platform.dao.system.SysRoleFunctionDao;
+import com.xlkh.platform.dao.system.SysRoleGroupDao;
+import com.xlkh.platform.pojo.system.SysRole;
+import com.xlkh.platform.query.system.SysRoleQuery;
+
+@Service
+@Transactional(readOnly = true)
+public class SysRoleServiceImpl implements SysRoleService{
+
+	@Autowired
+	private SysRoleDao sysRoleDao;
+	@Autowired 
+	private SysRoleFunctionDao sysRoleFunctionDao;
+	@Autowired
+	private SysRoleGroupDao sysRoleGroupDao;
+	
+	@Override
+	public List<SysRole> getSysRoles(boolean isAllField) {
+
+		SysRoleQuery sysRoleQuery = null;
+		if(!isAllField){
+			sysRoleQuery = new SysRoleQuery();
+			sysRoleQuery.setFields("role_id,role_name");
+		}
+		return sysRoleDao.selectSysRolesWithCondition(sysRoleQuery);
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public void save(SysRole sysRole) {
+		sysRoleDao.insertSelective(sysRole);
+	}
+
+	@Transactional(readOnly = false,propagation = Propagation.REQUIRED)
+	@Override
+	public void delSysRoleByKey(Integer roleId) {
+		if(roleId != null){
+			// 中间表对应数据删除
+			sysRoleFunctionDao.deleteByRoleId(roleId);
+			sysRoleGroupDao.deleteByRoleId(roleId);
+			// 删除角色
+			sysRoleDao.deleteByKey(roleId);
+		}
+	}
+
+}

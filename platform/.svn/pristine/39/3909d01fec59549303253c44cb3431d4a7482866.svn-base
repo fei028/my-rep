@@ -1,0 +1,37 @@
+package com.xlkh.platform.dao.system;
+
+import java.util.List;
+
+import com.xlkh.platform.pojo.system.SysGroup;
+import com.xlkh.platform.query.system.SysGroupQuery;
+
+public interface SysGroupDao {
+	/**
+	 * 新增用户组
+	 * @param sysGroup
+	 * @return
+	 */
+	public Integer insertSelective(SysGroup sysGroup);
+	/**
+	 * 通过主键删除
+	 * @param goupId
+	 */
+	public void deleteByKey(Integer groupId);
+	/**
+	 * 更新
+	 * @param sysGroup
+	 */
+	public void update(SysGroup sysGroup);
+	/**
+	 * 通过主键查询获取用户组对象
+	 * @param id
+	 * @return SysGroup对象
+	 */
+	public SysGroup selectByKey(Integer id);
+	/**
+	 * 条件查询
+	 * @param sysGroupQuery 查询对象
+	 * @return SysGroup对象集合
+	 */
+	public List<SysGroup> selectSysGroupsWithCondition(SysGroupQuery sysGroupQuery);
+}

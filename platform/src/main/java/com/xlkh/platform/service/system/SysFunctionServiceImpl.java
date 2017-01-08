@@ -1,0 +1,177 @@
+package com.xlkh.platform.service.system;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONArray;
+import com.xlkh.platform.dao.system.SysFunctionDao;
+import com.xlkh.platform.dao.system.SysRoleFunctionDao;
+import com.xlkh.platform.pojo.system.SysFunction;
+import com.xlkh.platform.pojo.system.SysRoleFunction;
+import com.xlkh.platform.pojo.system.Tree;
+import com.xlkh.platform.query.system.SysFunctionQuery;
+import com.xlkh.platform.query.system.SysRoleFunctionQuery;
+
+@Service
+@Transactional(readOnly = true)
+public class SysFunctionServiceImpl implements SysFunctionService{
+
+	@Autowired
+	private SysFunctionDao sysFunctionDao;
+	@Autowired
+	private SysRoleFunctionDao sysRoleFunctionDao;
+	
+	@Override
+	public List<SysFunction> getAllSysFunction(boolean isAllField) {
+		SysFunctionQuery sysFunctionQuery = new SysFunctionQuery();
+		if(!isAllField){
+			// id 功能名称 	功能代码 	父级功能名称 	功能URL 	功能类型
+			String fields = "function_id,function_name,function_code,"
+					+ "parent_id,function_url,function_type";
+			sysFunctionQuery.setFields(fields);
+		}
+		return sysFunctionDao.selectSysFunctionsWithCondition(sysFunctionQuery);
+	}
+
+	@Override
+	public List<SysFunction> getAllSysFunctionIdAndName() {
+		SysFunctionQuery sysFunctionQuery = new SysFunctionQuery();
+		sysFunctionQuery.setFields("function_id,function_name");
+		sysFunctionQuery.setFunctionType(SysFunction.FUNCTION_TYPE_MENU);
+		return sysFunctionDao.selectSysFunctionsWithCondition(sysFunctionQuery);
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public void addSysFunction(SysFunction sysFunction) {
+		if(sysFunction != null){
+			sysFunctionDao.insertSelective(sysFunction);
+		}
+	}
+
+	@Override
+	public boolean isExistFunctionCode(String functionCode) {
+		SysFunctionQuery sysFunctionQuery = new SysFunctionQuery();
+		sysFunctionQuery.setFunctionCode(functionCode);
+		return sysFunctionDao.selectSysFunctionsWithCondition(sysFunctionQuery).size() > 0 ? true : false;
+	}
+
+	@Override
+	public String getTreeData() {
+		// 记录全部查出
+		List<Tree> treeNodes = sysFunctionDao.getTreeNodes();
+		return buildUpJsonTreeByTreeNodes(treeNodes);
+	}
+
+	/**
+	 * 通过树节点组装成json树
+	 * @param treeNodes
+	 * @return
+	 */
+	private String buildUpJsonTreeByTreeNodes(List<Tree> treeNodes) {
+		String jsonTree = "";
+		
+		if(treeNodes != null && treeNodes.size()>0){
+			List<Tree> rootTrees = new ArrayList<>();
+			for(Tree tree:treeNodes){
+				if(tree.getpId().equals(0)){
+					rootTrees.add(tree);
+				}
+				for(Tree _tree:treeNodes){
+					if(_tree.getpId().equals(tree.getId())){
+						tree.getNodes().add(_tree);
+					}
+				}
+			}
+			JSONArray jsonArray = new JSONArray();
+			jsonArray.addAll(rootTrees);
+			jsonTree = jsonArray.toJSONString();
+		}
+		
+		return jsonTree;
+	}
+
+	@Override
+	public List<SysFunction> getAllMenus() {
+		List<SysFunction> menus = null;
+		SysFunctionQuery sysFunctionQuery = new SysFunctionQuery();
+		sysFunctionQuery.setFields("function_id,function_name,function_type,parent_id");
+		List<SysFunction> sysFunctions = sysFunctionDao.selectSysFunctionsWithCondition(sysFunctionQuery );
+		if(sysFunctions != null && sysFunctions.size() > 0){
+			menus = new ArrayList<>();
+			for(SysFunction sysFunction_1:sysFunctions){
+				if(sysFunction_1.getFunctionType().equals(SysFunction.FUNCTION_TYPE_MENU)){
+					menus.add(sysFunction_1);
+					for(SysFunction sysFunction_2:sysFunctions){
+						if(!sysFunction_2.getFunctionId().equals(0)
+								&& sysFunction_2.getParentId().equals(sysFunction_1.getFunctionId())){
+							sysFunction_1.getSysFunctions().add(sysFunction_2);
+						}
+					}
+				}
+			}
+		}
+		return menus;
+	}
+
+	@Override
+	public Map<Integer,Integer> getSysRoleFunctionMapByRoleId(Integer roleId) {
+		Map<Integer,Integer> map = null;
+		SysRoleFunctionQuery sysRoleFunctionQuery = new SysRoleFunctionQuery();
+		sysRoleFunctionQuery.setRoleId(roleId);
+		sysRoleFunctionQuery.setFields("function_id");
+		List<SysRoleFunction> sysRoleFunctions = sysRoleFunctionDao.selectSysRoleFunctionsWithCondition(sysRoleFunctionQuery );
+		if(sysRoleFunctions != null && sysRoleFunctions.size() > 0){
+			map = new HashMap<>();
+			for(SysRoleFunction sysRoleFunction:sysRoleFunctions){
+				map.put(sysRoleFunction.getFunctionId(), roleId);
+			}
+		}
+		return map;
+	}
+
+	@Transactional(readOnly = false,propagation = Propagation.REQUIRED)
+	@Override
+	public void deleteByFunctionIds(Integer[] functionIds) {
+		if(functionIds != null && functionIds.length > 0){
+			// 权限角色表有关数据删除
+			sysRoleFunctionDao.deleteBySysFunctionIds(functionIds);
+			// 权限表有关数据删除
+			sysFunctionDao.deleteByFunctionIds(functionIds);
+		}
+		
+	}
+
+	@Override
+	public SysFunction getSysFunctionByKey(Integer functionId) {
+		return sysFunctionDao.selectByFunctionId(functionId);
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public void edit(SysFunction sysFunction) {
+		sysFunctionDao.update(sysFunction);
+	}
+
+	@Override
+	public boolean isExistFunctionName(String functionName) {
+		SysFunctionQuery sysFunctionQuery = new SysFunctionQuery();
+		sysFunctionQuery.setFunctionName(functionName);
+		List<SysFunction> sysFunctions = sysFunctionDao.selectSysFunctionsWithCondition(sysFunctionQuery );
+		if(sysFunctions == null || sysFunctions.size() <= 0){
+			return false;
+		}
+		return true;
+	}
+
+
+	
+
+}

@@ -1,0 +1,48 @@
+package com.xlkh.platform.dao.system;
+
+import java.util.List;
+
+import com.xlkh.platform.pojo.system.SysUser;
+import com.xlkh.platform.query.system.SysUserQuery;
+
+public interface SysUserDao {
+	
+	/**
+	 * 将sysUser用户信息存入数据库
+	 * @param sysUser 新用户
+	 */
+	public void insertSelective(SysUser sysUser);
+	
+	/**
+	 * 删除用户通过主键
+	 * @param userId 主键
+	 */
+	public void deleteByKey(Integer userId);
+	
+	/**
+	 * 更新用户信息，属性null值忽略不更新
+	 * @param sysUser
+	 */
+	public void update(SysUser sysUser);
+	
+	/**
+	 * 条件查询获取SysUser对象集合
+	 * @param sysUserQuery 查询对象
+	 * @return SysUser对象集合
+	 */
+	public List<SysUser> selectSysUsersWithCondition(SysUserQuery sysUserQuery);
+	
+	/**
+	 * 获取条件查询结果集数量
+	 * @param sysUserQuery 查询对象
+	 * @return 条件查询结果集数量
+	 */
+	public Integer selectSysUsersWithConditionReturnCount(SysUserQuery sysUserQuery);
+	/**
+	 * 通过用户帐号查询获取对应的用户信息
+	 * @param userName 用户登录帐号
+	 * @return
+	 */
+	public SysUser findSysUserBySysUserAccount(String userName);
+	
+}

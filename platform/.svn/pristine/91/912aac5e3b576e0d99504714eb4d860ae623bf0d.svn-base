@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkh.platform.dao.system.SysRoleFunctionDao" >
+  <resultMap id="sysRoleFunction" type="SysRoleFunction" >
+    <id column="id" property="id" javaType="integer" />
+    <result column="id" property="id" javaType="integer" />
+    <result column="role_id" property="roleId" javaType="integer" />
+    <result column="function_id" property="functionId" javaType="integer" />
+    <result column="create_user" property="createUser" javaType="integer" />
+    <result column="create_time" property="createTime" javaType="date" />
+    <result column="update_user" property="updateUser" javaType="integer" />
+    <result column="update_time" property="updateTime" javaType="date" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id,<!-- 关系ID -->
+    role_id,<!-- 角色ID -->
+    function_id,<!-- 功能ID -->
+    create_user,<!-- 创建人 -->
+    create_time,<!-- 创建时间 -->
+    update_user,<!-- 更新人 -->
+    update_time<!-- 更新时间 -->
+  </sql>
+  
+  <!-- 查询select部分  -->
+  <sql id="selector">
+  	SELECT
+  	<if test="fields != null">
+  	 	${fields}
+  	</if>
+  	<if test="fields == null">
+  		<include refid="Base_Column_List"/>
+  	</if>
+  	FROM sys_role_function
+  </sql>
+  <!-- 查询where语句部分 -->
+  <sql id="where">
+	<where>
+		<if test="id != null">
+			AND id = #{id}
+		</if>
+		<if test="roleId != null">
+			AND role_id = #{roleId}
+		</if>
+		<if test="functionId != null">
+			AND function_id = #{functionId}
+		</if>
+		<if test="createUser != null">
+			AND create_user = #{createUser}
+		</if>
+		<if test="createTime != null">
+			AND create_time = #{createTime}
+		</if>
+		<if test="updateUser != null">
+			AND update_user = #{updateUser}
+		</if>
+		<if test="updateTime != null">
+			AND update_time = #{updateTime}
+		</if>
+	</where>
+  </sql>
+  <!-- 查询语句order by 部分 -->
+  <sql id="orderBy">
+  	<if test="orderByFields != null and orderByFields.size>0">
+  		ORDER BY
+  		<foreach collection="orderByFields" item="orderByField" separator=",">
+  			${orderByField.field} ${orderByField.order}
+  		</foreach>
+  	</if>
+  </sql>
+  
+  <sql id="limit">
+  	<if test="startRow != null">
+  		LIMIT  ${startRow},${pageSize}
+  	</if>
+  </sql>
+<!--  *****查询有关  start***** -->
+
+  <!--  条件查询  -->
+  <select id="selectSysRoleFunctionsWithCondition" resultMap="sysRoleFunction" parameterType="SysRoleFunctionQuery">
+  	<include refid="selector"/>
+  	<include refid="where"/>
+  	<include refid="orderBy"/>
+  	<include refid="limit"/>
+  </select>
+  
+  <!--  条件查询对应记录总数  -->
+  <select id="getCountWithCondition" resultType="long" parameterType="SysRoleFunctionQuery">
+  	SELECT count(1)
+  	FROM sys_role_function
+  	<include refid="where"/>
+  </select>
+  
+  <!-- 通过主键批量查询 -->
+  <select id="selectByIds" resultMap="sysRoleFunction">
+  	SELECT 
+  	<include refid="Base_Column_List"/>
+  	FROM sys_role_function
+  	WHERE id IN
+  	 <foreach collection="list" item="id" open="(" close=")" separator=",">
+	 	${id}
+	 </foreach>
+  </select>
+  
+  <!-- 通过主键查询  -->
+  <select id="selectById" resultMap="sysRoleFunction" parameterType="integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role_function
+    where id = #{id}
+  </select>
+  
+<!--  *****查询有关  end***** -->
+
+<!--  *****删除有关  start***** -->
+
+  <!-- 通过主键批量删除 -->
+  <delete id="deleteByIds">
+  	 DELETE FROM sys_role_function
+     WHERE id IN 
+	 <foreach collection="array" item="id" open="(" close=")" separator=",">
+	 	${id}
+	 </foreach>
+  </delete>
+  
+  <!-- 通过主键删除 -->
+  <delete id="deleteById" parameterType="integer" >
+    delete from sys_role_function
+    where id = #{id}
+  </delete>
+  
+  <delete id="deleteByRoleId" parameterType="integer">
+  	 DELETE FROM sys_role_function
+     WHERE role_id = #{roleId,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteByFunctionId" parameterType="integer">
+  	 DELETE FROM sys_role_function
+     WHERE function_id = #{functionId,jdbcType=INTEGER}
+  </delete>
+  <!-- 按照功能id批量删除 -->
+  <delete id="deleteBySysFunctionIds">
+  	 DELETE FROM sys_role_function
+     WHERE function_id IN
+     <foreach collection="array" item="funId" open="(" close=")" separator=",">
+     	${funId}
+     </foreach>
+  </delete>
+<!--  *****删除有关  end***** -->
+
+<!--  *****插入有关  start***** -->
+
+  <!-- 有选择插入字段 NULL忽略-->
+  <insert id="insertSelective" parameterType="SysRoleFunction" useGeneratedKeys="true" keyProperty="id">
+    insert into sys_role_function
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="functionId != null" >
+        function_id,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+       #{id},
+      </if>
+      <if test="roleId != null" >
+       #{roleId},
+      </if>
+      <if test="functionId != null" >
+       #{functionId},
+      </if>
+      <if test="createUser != null" >
+       #{createUser},
+      </if>
+      <if test="createTime != null" >
+       #{createTime},
+      </if>
+      <if test="updateUser != null" >
+       #{updateUser},
+      </if>
+      <if test="updateTime != null" >
+       #{updateTime},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 批量插入 -->
+  <insert id="insertSysRoleFunctions" parameterType="java.util.List">
+   insert into sys_role_function 
+   (role_id, function_id, create_user, create_time, update_user, update_time)
+   values 
+   <foreach collection="list" item="sysRoleFunction" separator=",">
+	   (
+	    #{sysRoleFunction.roleId,jdbcType=INTEGER},
+	    #{sysRoleFunction.functionId,jdbcType=INTEGER}, 
+	    #{sysRoleFunction.createUser,jdbcType=INTEGER},
+	    #{sysRoleFunction.createTime,jdbcType=TIMESTAMP}, 
+	    #{sysRoleFunction.updateUser,jdbcType=INTEGER},
+	    #{sysRoleFunction.updateTime,jdbcType=TIMESTAMP}
+	    )
+    </foreach>
+  </insert>
+<!--  *****插入有关  end***** -->
+
+<!--  *****更新有关  start***** -->
+  
+  <!-- 选择更新字段 NULL忽略 -->
+  <update id="update" parameterType="SysRoleFunction" >
+    update sys_role_function
+    <set >
+      <if test="roleId != null" >
+        role_id = #{roleId},
+      </if>
+      <if test="functionId != null" >
+        function_id = #{functionId},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+<!--  *****更新有关  end***** -->
+</mapper>

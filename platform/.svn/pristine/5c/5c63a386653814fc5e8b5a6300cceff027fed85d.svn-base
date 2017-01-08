@@ -1,0 +1,173 @@
+$(document).ready(function () {
+	//header selected
+    $('.dropdown-toggle').dropdown();
+	
+	//iframe setting	
+	var iframeWidth=$(document).width()-$('#sidebar').width();
+    $('#mainIframe').width(iframeWidth);
+    setIframeHeight(document.getElementById('mainIframe'));
+
+    //sidebar
+    $('#menu-toggle').click(function () {
+    	
+    	var hasPaddingLeft = false;
+    	
+        if (!$('body').hasClass('sidebar-collapse')) {
+        	
+            $('body').addClass('sidebar-collapse');
+			//remove a collapse attributes
+			$("#sidebar-menu a").each(function(){ 
+				if('false'==($(this).attr('aria-expanded'))){
+					 $(this).click();
+				}              				
+            }); 
+			//change iframe width
+			iframeWidth=$(document).width()-$('#sidebar').width();
+            $('#mainIframe').width(iframeWidth);
+        } else {
+        	hasPaddingLeft = true;
+        	
+			$('body').removeClass('sidebar-collapse');
+			// add a collapse attributes
+			// $("#sidebar-menu a").each(function(){
+                // $(this).attr('data-toggle', 'collapse');           
+            // }); 
+			//change iframe width
+			iframeWidth=$(document).width()-$('#sidebar').width();
+            $('#mainIframe').width(iframeWidth);
+        }
+        // 自己添加
+    	changeLeftMenuStyle(hasPaddingLeft);
+    });	
+   
+   // 显示菜单
+   showMenu(0,'top');
+   // 加载完首页触发菜单[菜单上有class = active]点击事件
+   $("#topMenu li a[class='active']").trigger('click');
+	
+});
+function setIframeHeight(iframe) {
+    if (iframe) {
+      var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+      if (iframeWin.document.body) {
+        iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+      }
+    }
+};
+function changeLeftMenuStyle(hasPaddingLeft){
+	var paddingLeft = hasPaddingLeft == false ? '0px' : '22px';
+	// 将左侧菜单margin-left去掉
+	$("#sidebar-menu > li > a").css('padding-left',paddingLeft);
+}
+/**
+ * 展示菜单
+ * @param parentId 父ID
+ * @param position 菜单位置 left [左部菜单] or top [顶部导航菜单]
+ */
+function showMenu(parentId,position){
+	 // 当查找顶部菜单时，将parentId设为0
+	 parentId = position == 'top' ? 0 : parentId;
+	 $.ajax({
+	    	type: "POST",
+	    	datatype: "json",
+	    	url: "./menu/getMenu.do",
+	    	data: {
+	    		parentId: parentId
+	    	},
+	    	async: false,
+	    	success: function(data) {
+
+	    		if(data == null || data.length == 0){
+	    			return;
+	    		}
+	    		// 左部菜单
+	    		if(position == 'left'){
+	    			showLeftMenu(data);
+	    			return;
+	    		}
+	    		
+	    		// 顶部菜单
+	    		if(position == 'top'){
+	    			showTopMenu(data);
+	    			return;
+	    		}
+
+	    	}
+	    });
+}
+/**
+ * 左部菜单展示
+ * @param data 与展示菜单有关的数据
+ */
+function showLeftMenu(data){
+	// 显示点击顶部导航菜单名称
+	$('#topMenuName').html($("#topMenu li a[class='active']").html());
+	
+	var leftMenuHtml = '';
+	for(var i = 0;i < data.length;i++){
+		leftMenuHtml += 
+			'<li>'+
+				'<a href="#'+data[i].functionId+'" data-toggle="collapse">'+
+				    '<i class="icon icon-sup">&nbsp;&nbsp;&nbsp;&nbsp;</i>'+
+					'<span>'+data[i].functionName+'</span><i class="icon-angle-right put-right">&nbsp;&nbsp;&nbsp;&nbsp;</i>'+
+				'</a>'+
+				'<ul id="'+data[i].functionId+'" class="menu-item collapse">'+
+					appendChildMenu(data[i].functionName, data[i].sysFunctions)+
+				'</ul>'+
+	        '</li>';
+	}
+	
+	$('#sidebar-menu').html(leftMenuHtml);
+	
+}
+
+/**
+ * 拼接子菜单，返回拼接的字符串
+ * @param parentMenuName 父菜单名称
+ * @param childMenus 子菜单集合
+ * @returns {String} 拼接的字符串
+ */
+function appendChildMenu(parentMenuName,childMenus){
+	if(childMenus == null || childMenus.length <= 0){
+		return '';
+	}
+	var childMenuHtml = '';
+	
+	for(var i = 0; i < childMenus.length; i++){
+		var params = "?level1MenuName="+$("#topMenu li a[class='active']").html()+"&level2MenuName="+parentMenuName+"&level3MenuName="+childMenus[i].functionName;
+		childMenuHtml += '<li><a href="javascript:;" onclick="menuClick(\''+childMenus[i].functionUrl+params+'\')">'+childMenus[i].functionName+'</a></li>';
+	}
+	
+	return childMenuHtml;
+}
+
+/**
+ * 菜单点击
+ * @param url 菜单url
+ */
+function menuClick(url,menuName){
+	$("#mainIframe").attr('src',url);
+}
+/**
+ * 顶部菜单展示
+ * @param data 与展示菜单有关的数据
+ */
+function showTopMenu(data){
+	
+	var topMenuHtml = '';
+	for(var i = 0;i < data.length;i++){
+		topMenuHtml += '<li><a href="javascript:;" functionId="'+data[i].functionId+'">'+data[i].functionName+'</a></li>';
+	}
+	
+	// 菜单展示
+	$("#topMenu").html(topMenuHtml);
+	
+	$("#topMenu li a").eq(0).addClass('active');
+	
+	// 给顶部菜单注册点击事件
+	$("#topMenu > li > a").on('click',function(){
+		showMenu($(this).attr('functionId'),'left');
+	})
+
+}
+
